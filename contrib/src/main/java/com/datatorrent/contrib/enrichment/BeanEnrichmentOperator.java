@@ -2,7 +2,7 @@ package com.datatorrent.contrib.enrichment;
 
 import com.datatorrent.api.Context;
 import com.datatorrent.lib.util.PojoUtils;
-import com.datatorrent.lib.util.PojoUtils.GetterObject;
+import com.datatorrent.lib.util.PojoUtils.Getter;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,13 +46,13 @@ public class BeanEnrichmentOperator extends AbstractEnrichmentOperator<Object, O
   protected Class inputClass;
   protected Class outputClass;
   private transient List<Field> updates = new ArrayList<Field>();
-  private transient List<GetterObject> getters = new ArrayList<GetterObject>();
-  private transient List<GetterObject> inputGetters = new ArrayList<GetterObject>();
+  private transient List<Getter> getters = new ArrayList<Getter>();
+  private transient List<Getter> inputGetters = new ArrayList<Getter>();
 
   @Override
   protected Object getKey(Object tuple) {
     ArrayList<Object> keyList = new ArrayList<Object>();
-    for(GetterObject g : getters) {
+    for(Getter g : getters) {
         keyList.add(g.get(tuple));
     }
     return keyList;
@@ -100,7 +100,7 @@ public class BeanEnrichmentOperator extends AbstractEnrichmentOperator<Object, O
   private void populateGettersFrmLookup()
   {
     for (String fName : lookupFields) {
-        GetterObject f = PojoUtils.createGetterObject(inputClass, fName);
+        Getter f = PojoUtils.createGetter(inputClass, fName, Object.class);
         getters.add(f);
     }
   }
@@ -109,7 +109,7 @@ public class BeanEnrichmentOperator extends AbstractEnrichmentOperator<Object, O
   {
     Field[] fields = inputClass.getFields();
     for (Field fName : fields) {
-      GetterObject f = PojoUtils.createGetterObject(inputClass, fName.getName());
+      Getter f = PojoUtils.createGetter(inputClass, fName.getName(), Object.class);
       inputGetters.add(f);
     }
   }

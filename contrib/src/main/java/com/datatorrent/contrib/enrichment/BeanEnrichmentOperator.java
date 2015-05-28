@@ -3,9 +3,12 @@ package com.datatorrent.contrib.enrichment;
 import com.datatorrent.api.Context;
 import com.datatorrent.lib.util.PojoUtils;
 import com.datatorrent.lib.util.PojoUtils.Getter;
+import com.datatorrent.lib.util.PojoUtils.Setter;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +16,7 @@ import org.slf4j.LoggerFactory;
  *
  * This class takes a POJO as input and extract the value of the lookupKey configured
  * for this operator. It then does a lookup in file/DB to find matching entry and all key-value pairs
- * specified in the file/DB or based on include fields are added to original tuple.
+ * specified in the file/DB or based on include fieldMap are added to original tuple.
  *
  * Properties:<br>
  * <b>inputClass</b>: Class to be loaded for the incoming data type<br>
@@ -45,9 +48,9 @@ public class BeanEnrichmentOperator extends AbstractEnrichmentOperator<Object, O
   private transient static final Logger logger = LoggerFactory.getLogger(BeanEnrichmentOperator.class);
   protected Class inputClass;
   protected Class outputClass;
-  private transient List<Field> updates = new ArrayList<Field>();
-  private transient List<Getter> getters = new ArrayList<Getter>();
-  private transient List<Getter> inputGetters = new ArrayList<Getter>();
+  private transient List<Field> updates = new LinkedList<Field>();
+  private transient List<Getter> getters = new LinkedList<Getter>();
+  private transient List<Fields> fieldMap = new LinkedList<Fields>();
 
   @Override
   protected Object getKey(Object tuple) {
@@ -62,13 +65,12 @@ public class BeanEnrichmentOperator extends AbstractEnrichmentOperator<Object, O
   protected Object convert(Object in, Object cached) {
     try {
       Object o = outputClass.newInstance();
-      // Copy the fields from input to output
-      Field[] fields = inputClass.getFields();
 
-      int idx = 0;
-      for(Field f : fields) {
-        outputClass.getField(f.getName()).set(o, inputGetters.get(idx++).get(in));
+      // Copy the fields from input to output
+      for (Fields map : fieldMap) {
+        map.set.set(o, map.get.get(in));
       }
+
       if (cached == null)
         return o;
 
@@ -76,7 +78,7 @@ public class BeanEnrichmentOperator extends AbstractEnrichmentOperator<Object, O
         populateUpdatesFrmIncludeFields();
       }
       ArrayList<Object> newAttributes = (ArrayList<Object>)cached;
-      idx = 0;
+      int idx = 0;
       for(Field f : updates) {
         f.set(o, newAttributes.get(idx));
         idx++;
@@ -85,8 +87,6 @@ public class BeanEnrichmentOperator extends AbstractEnrichmentOperator<Object, O
     } catch (InstantiationException e) {
       throw new RuntimeException(e);
     } catch (IllegalAccessException e) {
-      throw new RuntimeException(e);
-    } catch (NoSuchFieldException e) {
       throw new RuntimeException(e);
     }
   }
@@ -109,8 +109,10 @@ public class BeanEnrichmentOperator extends AbstractEnrichmentOperator<Object, O
   {
     Field[] fields = inputClass.getFields();
     for (Field fName : fields) {
-      Getter f = PojoUtils.createGetter(inputClass, fName.getName(), Object.class);
-      inputGetters.add(f);
+      Fields f = new Fields();
+      f.get = PojoUtils.createGetter(inputClass, fName.getName(), Object.class);
+      f.set = PojoUtils.createSetter(outputClass, fName.getName(), Object.class);
+      this.fieldMap.add(f);
     }
   }
 
@@ -143,5 +145,11 @@ public class BeanEnrichmentOperator extends AbstractEnrichmentOperator<Object, O
       populateGettersFrmInput();
     }
     super.processTuple(tuple);
+  }
+
+  private class Fields
+  {
+    public Getter get;
+    public Setter set;
   }
 }

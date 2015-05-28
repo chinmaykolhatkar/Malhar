@@ -50,7 +50,7 @@ public class BeanEnrichmentOperator extends AbstractEnrichmentOperator<Object, O
   protected Class outputClass;
   private transient List<Field> updates = new LinkedList<Field>();
   private transient List<Getter> getters = new LinkedList<Getter>();
-  private transient List<Fields> fieldMap = new LinkedList<Fields>();
+  private transient List<FieldObjectMap> fieldMap = new LinkedList<FieldObjectMap>();
 
   @Override
   protected Object getKey(Object tuple) {
@@ -67,7 +67,7 @@ public class BeanEnrichmentOperator extends AbstractEnrichmentOperator<Object, O
       Object o = outputClass.newInstance();
 
       // Copy the fields from input to output
-      for (Fields map : fieldMap) {
+      for (FieldObjectMap map : fieldMap) {
         map.set.set(o, map.get.get(in));
       }
 
@@ -109,7 +109,7 @@ public class BeanEnrichmentOperator extends AbstractEnrichmentOperator<Object, O
   {
     Field[] fields = inputClass.getFields();
     for (Field fName : fields) {
-      Fields f = new Fields();
+      FieldObjectMap f = new FieldObjectMap();
       f.get = PojoUtils.createGetter(inputClass, fName.getName(), Object.class);
       f.set = PojoUtils.createSetter(outputClass, fName.getName(), Object.class);
       this.fieldMap.add(f);
@@ -147,7 +147,7 @@ public class BeanEnrichmentOperator extends AbstractEnrichmentOperator<Object, O
     super.processTuple(tuple);
   }
 
-  private class Fields
+  private class FieldObjectMap
   {
     public Getter get;
     public Setter set;

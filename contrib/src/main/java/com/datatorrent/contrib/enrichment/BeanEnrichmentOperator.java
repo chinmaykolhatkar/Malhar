@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,11 +109,16 @@ public class BeanEnrichmentOperator extends AbstractEnrichmentOperator<Object, O
   private void populateGettersFrmInput()
   {
     Field[] fields = inputClass.getFields();
-    for (Field fName : fields) {
-      FieldObjectMap f = new FieldObjectMap();
-      f.get = PojoUtils.createGetter(inputClass, fName.getName(), Object.class);
-      f.set = PojoUtils.createSetter(outputClass, fName.getName(), Object.class);
-      this.fieldMap.add(f);
+    for (Field f : fields) {
+      Class c = ClassUtils.primitiveToWrapper(f.getType());
+      FieldObjectMap fieldMap = new FieldObjectMap();
+      fieldMap.get = PojoUtils.createGetter(inputClass, f.getName(), c);
+      try {
+        fieldMap.set = PojoUtils.createSetter(outputClass, f.getName(), c);
+      } catch (Throwable e) {
+        throw new RuntimeException("Failed to initialize Output Class for field: " + f.getName(), e);
+      }
+      this.fieldMap.add(fieldMap);
     }
   }
 
@@ -123,7 +129,7 @@ public class BeanEnrichmentOperator extends AbstractEnrichmentOperator<Object, O
         f.setAccessible(true);
         updates.add(f);
       } catch (NoSuchFieldException e) {
-        throw new RuntimeException(e);
+        throw new RuntimeException("Cannot find field '" + fName + "' in output class", e);
       }
     }
   }

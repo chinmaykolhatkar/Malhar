@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.esotericsoftware.kryo.NotNull;
 import org.apache.commons.lang3.ClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +53,10 @@ public class BeanEnrichmentOperator extends AbstractEnrichmentOperator<Object, O
   private transient List<Field> updates = new LinkedList<Field>();
   private transient List<Getter> getters = new LinkedList<Getter>();
   private transient List<FieldObjectMap> fieldMap = new LinkedList<FieldObjectMap>();
+
+  @NotNull
+  protected String outputClassStr;
+
 
   @Override
   protected Object getKey(Object tuple) {
@@ -123,6 +128,15 @@ public class BeanEnrichmentOperator extends AbstractEnrichmentOperator<Object, O
   }
 
   private void populateUpdatesFrmIncludeFields() {
+    if (this.outputClass == null) {
+      logger.debug("Creating output class instance from string: {}", outputClassStr);
+      try {
+        this.outputClass = this.getClass().getClassLoader().loadClass(outputClassStr);
+      } catch (ClassNotFoundException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
     for (String fName : includeFields) {
       try {
         Field f = outputClass.getField(fName);
@@ -134,13 +148,14 @@ public class BeanEnrichmentOperator extends AbstractEnrichmentOperator<Object, O
     }
   }
 
-  public void setOutputClass(String outputClass)
+  public String getOutputClassStr()
   {
-    try {
-      this.outputClass = this.getClass().getClassLoader().loadClass(outputClass);
-    } catch (ClassNotFoundException e) {
-      throw new RuntimeException(e);
-    }
+    return outputClassStr;
+  }
+
+  public void setOutputClassStr(String outputClassStr)
+  {
+    this.outputClassStr = outputClassStr;
   }
 
   @Override protected void processTuple(Object tuple)

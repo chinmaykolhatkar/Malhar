@@ -54,6 +54,7 @@ public abstract class AbstractEnrichmentOperator<INPUT, OUTPUT> extends BaseOper
       processTuple(tuple);
     }
   };
+
   private EnrichmentBackup store;
 
   @NotNull

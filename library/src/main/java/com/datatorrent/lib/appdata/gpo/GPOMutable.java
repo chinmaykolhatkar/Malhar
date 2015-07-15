@@ -699,7 +699,6 @@ public class GPOMutable implements Serializable
     hash = 23 * hash + Arrays.hashCode(this.fieldsFloat);
     hash = 23 * hash + Arrays.hashCode(this.fieldsDouble);
     hash = 23 * hash + Arrays.deepHashCode(this.fieldsString);
-    hash = 23 * hash + (this.fieldDescriptor != null ? this.fieldDescriptor.hashCode() : 0);
     return hash;
   }
 

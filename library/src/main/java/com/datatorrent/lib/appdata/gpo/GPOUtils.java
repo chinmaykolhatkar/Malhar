@@ -97,7 +97,7 @@ public class GPOUtils
 
     return fieldToType;
   }
-
+  
   /**
    * Converts the provided JSON into a GPOMutable object with the provided {@link FieldsDescriptor}
    * @param fieldsDescriptor The {@link FieldsDescriptor} to initialize the {@link GPOMutable} object with.
@@ -1751,151 +1751,113 @@ public class GPOUtils
     int hashCode = 0;
 
     {
-      String[] stringArray = gpo.getFieldsString();
       int[] srcIndex = indexSubset.fieldsStringIndexSubset;
       if(srcIndex != null) {
-        for(int index = 0;
-            index < srcIndex.length;
-            index++) {
-          if(srcIndex[index] == -1) {
-            continue;
-          }
-          hashCode ^= stringArray[srcIndex[index]].hashCode();
+        String[] stringArray = gpo.getFieldsString();
+        for (int i : srcIndex) {
+          if (i == -1) break;
+          hashCode = 31 * hashCode + stringArray[i].hashCode();
         }
       }
     }
 
     {
-      boolean[] booleanArray = gpo.getFieldsBoolean();
       int[] srcIndex = indexSubset.fieldsBooleanIndexSubset;
       if(srcIndex != null) {
-        for(int index = 0;
-            index < srcIndex.length;
-            index++) {
-          if(srcIndex[index] == -1) {
-            continue;
-          }
-          hashCode ^= booleanArray[srcIndex[index]] ? 1: 0;
+        boolean[] booleanArray = gpo.getFieldsBoolean();
+        for (int i : srcIndex) {
+          if (i == -1) break;
+          hashCode = 31 * hashCode + (booleanArray[i] ? 1231 : 1237);
         }
       }
     }
 
     {
-      char[] charArray = gpo.getFieldsCharacter();
       int[] srcIndex = indexSubset.fieldsCharacterIndexSubset;
       if(srcIndex != null) {
-        for(int index = 0;
-            index < srcIndex.length;
-            index++) {
-          if(srcIndex[index] == -1) {
-            continue;
-          }
-          hashCode ^= Character.getNumericValue(charArray[srcIndex[index]]);
+        char[] charArray = gpo.getFieldsCharacter();
+        for (int i : srcIndex) {
+          if (i == -1) break;
+          hashCode = 31 * hashCode + charArray[i];
         }
       }
     }
 
     {
-      byte[] byteArray = gpo.getFieldsByte();
       int[] srcIndex = indexSubset.fieldsByteIndexSubset;
       if(srcIndex != null) {
-        for(int index = 0;
-            index < srcIndex.length;
-            index++) {
-          if(srcIndex[index] == -1) {
-            continue;
-          }
-          hashCode ^= byteArray[srcIndex[index]];
+        byte[] byteArray = gpo.getFieldsByte();
+        for (int i : srcIndex) {
+          if (i == -1) break;
+          hashCode = 31 * hashCode + byteArray[i];
         }
       }
     }
 
     {
-      short[] shortArray = gpo.getFieldsShort();
       int[] srcIndex = indexSubset.fieldsShortIndexSubset;
       if(srcIndex != null) {
-        for(int index = 0;
-            index < srcIndex.length;
-            index++) {
-          if(srcIndex[index] == -1) {
-            continue;
-          }
-          hashCode ^= shortArray[srcIndex[index]];
+        short[] shortArray = gpo.getFieldsShort();
+        for (int i : srcIndex) {
+          if (i == -1) break;
+          hashCode = 31 * hashCode + shortArray[i];
         }
       }
     }
 
     {
-      int[] integerArray = gpo.getFieldsInteger();
       int[] srcIndex = indexSubset.fieldsIntegerIndexSubset;
       if(srcIndex != null) {
-        for(int index = 0;
-            index < srcIndex.length;
-            index++) {
-          if(srcIndex[index] == -1) {
-            continue;
-          }
-          hashCode ^= integerArray[srcIndex[index]];
+        int[] integerArray = gpo.getFieldsInteger();
+        for (int i : srcIndex) {
+          if (i == -1) break;
+          hashCode = 31 * hashCode + integerArray[i];
         }
       }
     }
 
     {
-      long[] longArray = gpo.getFieldsLong();
       int[] srcIndex = indexSubset.fieldsLongIndexSubset;
       if(srcIndex != null) {
-        for(int index = 0;
-            index < srcIndex.length;
-            index++) {
-          if(srcIndex[index] == -1) {
-            continue;
-          }
-          hashCode ^= longArray[srcIndex[index]];
+        long[] longArray = gpo.getFieldsLong();
+        for (int i : srcIndex) {
+          if (i == -1) break;
+          long element = longArray[i];
+          hashCode = 31 * hashCode + (int) (element ^ (element >>> 32));
         }
       }
     }
 
     {
-      float[] floatArray = gpo.getFieldsFloat();
       int[] srcIndex = indexSubset.fieldsFloatIndexSubset;
       if(srcIndex != null) {
-        for(int index = 0;
-            index < srcIndex.length;
-            index++) {
-          if(srcIndex[index] == -1) {
-            continue;
-          }
-          hashCode ^= Float.floatToIntBits(floatArray[srcIndex[index]]);
+        float[] floatArray = gpo.getFieldsFloat();
+        for (int i : srcIndex) {
+          if (i == -1) break;
+          hashCode = 31 * hashCode + Float.floatToIntBits(floatArray[i]);
         }
       }
     }
 
     {
-      double[] doubleArray = gpo.getFieldsDouble();
       int[] srcIndex = indexSubset.fieldsDoubleIndexSubset;
       if(srcIndex != null) {
-        for(int index = 0;
-            index < srcIndex.length;
-            index++) {
-          if(srcIndex[index] == -1) {
-            continue;
-          }
-          hashCode ^= Double.doubleToLongBits(doubleArray[srcIndex[index]]);
+        double[] doubleArray = gpo.getFieldsDouble();
+        for (int i : srcIndex) {
+          if (i == -1) break;
+          long element = Double.doubleToLongBits(doubleArray[i]);
+          hashCode = 31 * hashCode + (int) (element ^ (element >>> 32));
         }
       }
     }
 
     {
-      Object[] objectArray = gpo.getFieldsObject();
       int[] srcIndex = indexSubset.fieldsObjectIndexSubset;
       if(srcIndex != null) {
-        for(int index = 0;
-            index < srcIndex.length;
-            index++) {
-          if(srcIndex[index] == -1) {
-            continue;
-          }
-          hashCode ^= objectArray[srcIndex[index]].hashCode();
+        Object[] objectArray = gpo.getFieldsObject();
+        for (int i : srcIndex) {
+          if (i == -1) break;
+          hashCode = 31 * hashCode + objectArray[i].hashCode();
         }
       }
     }
@@ -2054,181 +2016,121 @@ public class GPOUtils
                                      IndexSubset indexSubset)
   {
     {
-      String[] destString = dest.getFieldsString();
-      String[] srcString = src.getFieldsString();
       int[] srcIndex = indexSubset.fieldsStringIndexSubset;
       if(srcIndex != null) {
-        for(int index = 0;
-            index < srcIndex.length;
-            index++) {
-          if(srcIndex[index] == -1) {
-            continue;
-          }
-          if(!destString[srcIndex[index]].equals(srcString[srcIndex[index]])) {
-            return false;
-          }
+        String[] destString = dest.getFieldsString();
+        String[] srcString = src.getFieldsString();
+        for (int i : srcIndex) {
+          if (i == -1) break;
+          if (!destString[i].equals(srcString[i])) return false;
         }
       }
     }
 
     {
-      boolean[] destBoolean = dest.getFieldsBoolean();
-      boolean[] srcBoolean = src.getFieldsBoolean();
       int[] srcIndex = indexSubset.fieldsBooleanIndexSubset;
       if(srcIndex != null) {
-        for(int index = 0;
-            index < srcIndex.length;
-            index++) {
-          if(srcIndex[index] == -1) {
-            continue;
-          }
-          if(destBoolean[srcIndex[index]] != srcBoolean[srcIndex[index]]) {
-            return false;
-          }
+        boolean[] destBoolean = dest.getFieldsBoolean();
+        boolean[] srcBoolean = src.getFieldsBoolean();
+        for (int i : srcIndex) {
+          if (i == -1) break;
+          if (destBoolean[i] != srcBoolean[i]) return false;
         }
       }
     }
 
     {
-      char[] destChar = dest.getFieldsCharacter();
-      char[] srcChar = src.getFieldsCharacter();
       int[] srcIndex = indexSubset.fieldsBooleanIndexSubset;
       if(srcIndex != null) {
-        for(int index = 0;
-            index < srcIndex.length;
-            index++) {
-          if(srcIndex[index] == -1) {
-            continue;
-          }
-          if(destChar[srcIndex[index]] != srcChar[srcIndex[index]]) {
-            return false;
-          }
+        char[] destChar = dest.getFieldsCharacter();
+        char[] srcChar = src.getFieldsCharacter();
+        for (int i : srcIndex) {
+          if (i == -1) break;
+          if (destChar[i] != srcChar[i]) return false;
         }
       }
     }
 
     {
-      byte[] destByte = dest.getFieldsByte();
-      byte[] srcByte = src.getFieldsByte();
       int[] srcIndex = indexSubset.fieldsByteIndexSubset;
       if(srcIndex != null) {
-        for(int index = 0;
-            index < srcIndex.length;
-            index++) {
-          if(srcIndex[index] == -1) {
-            continue;
-          }
-          if(destByte[srcIndex[index]] != srcByte[srcIndex[index]]) {
-            return false;
-          }
+        byte[] destByte = dest.getFieldsByte();
+        byte[] srcByte = src.getFieldsByte();
+        for (int i : srcIndex) {
+          if (i == -1) break;
+          if (destByte[i] != srcByte[i]) return false;
         }
       }
     }
 
     {
-      short[] destShort = dest.getFieldsShort();
-      short[] srcShort = src.getFieldsShort();
       int[] srcIndex = indexSubset.fieldsShortIndexSubset;
       if(srcIndex != null) {
-        for(int index = 0;
-            index < srcIndex.length;
-            index++) {
-          if(srcIndex[index] == -1) {
-            continue;
-          }
-          if(destShort[srcIndex[index]] != srcShort[srcIndex[index]]) {
-            return false;
-          }
+        short[] destShort = dest.getFieldsShort();
+        short[] srcShort = src.getFieldsShort();
+        for (int i : srcIndex) {
+          if (i == -1) break;
+          if (destShort[i] != srcShort[i]) return false;
         }
       }
     }
 
     {
-      int[] destInteger = dest.getFieldsInteger();
-      int[] srcInteger = src.getFieldsInteger();
       int[] srcIndex = indexSubset.fieldsIntegerIndexSubset;
       if(srcIndex != null) {
-        for(int index = 0;
-            index < srcIndex.length;
-            index++) {
-          if(srcIndex[index] == -1) {
-            continue;
-          }
-          if(destInteger[srcIndex[index]] != srcInteger[srcIndex[index]]) {
-            return false;
-          }
+        int[] destInteger = dest.getFieldsInteger();
+        int[] srcInteger = src.getFieldsInteger();
+        for (int i : srcIndex) {
+          if (i == -1) break;
+          if (destInteger[i] != srcInteger[i]) return false;
         }
       }
     }
 
     {
-      long[] destLong = dest.getFieldsLong();
-      long[] srcLong = src.getFieldsLong();
       int[] srcIndex = indexSubset.fieldsLongIndexSubset;
       if(srcIndex != null) {
-        for(int index = 0;
-            index < srcIndex.length;
-            index++) {
-          if(srcIndex[index] == -1) {
-            continue;
-          }
-          if(destLong[srcIndex[index]] != srcLong[srcIndex[index]]) {
-            return false;
-          }
+        long[] destLong = dest.getFieldsLong();
+        long[] srcLong = src.getFieldsLong();
+        for (int i : srcIndex) {
+          if (i == -1) break;
+          if (destLong[i] != srcLong[i]) return false;
         }
       }
     }
 
     {
-      float[] destFloat = dest.getFieldsFloat();
-      float[] srcFloat = src.getFieldsFloat();
       int[] srcIndex = indexSubset.fieldsFloatIndexSubset;
       if(srcIndex != null) {
-        for(int index = 0;
-            index < srcIndex.length;
-            index++) {
-          if(srcIndex[index] == -1) {
-            continue;
-          }
-          if(destFloat[srcIndex[index]] != srcFloat[srcIndex[index]]) {
-            return false;
-          }
+        float[] destFloat = dest.getFieldsFloat();
+        float[] srcFloat = src.getFieldsFloat();
+        for (int i : srcIndex) {
+          if (i == -1) break;
+          if (destFloat[i] != srcFloat[i]) return false;
         }
       }
     }
 
     {
-      double[] destDouble = dest.getFieldsDouble();
-      double[] srcDouble = src.getFieldsDouble();
       int[] srcIndex = indexSubset.fieldsDoubleIndexSubset;
       if(srcIndex != null) {
-        for(int index = 0;
-            index < srcIndex.length;
-            index++) {
-          if(srcIndex[index] == -1) {
-            continue;
-          }
-          if(destDouble[srcIndex[index]] != srcDouble[srcIndex[index]]) {
-            return false;
-          }
+        double[] destDouble = dest.getFieldsDouble();
+        double[] srcDouble = src.getFieldsDouble();
+        for (int i : srcIndex) {
+          if (i == -1) break;
+          if (destDouble[i] != srcDouble[i]) return false;
         }
       }
     }
 
     {
-      Object[] destObject = dest.getFieldsObject();
-      Object[] srcObject = src.getFieldsObject();
       int[] srcIndex = indexSubset.fieldsObjectIndexSubset;
       if(srcIndex != null) {
-        for(int index = 0;
-            index < srcIndex.length;
-            index++) {
-          if(srcIndex[index] == -1) {
-            continue;
-          }
-          if(!destObject[srcIndex[index]].equals(srcObject[srcIndex[index]])) {
-            return false;
-          }
+        Object[] destObject = dest.getFieldsObject();
+        Object[] srcObject = src.getFieldsObject();
+        for (int i : srcIndex) {
+          if (i == -1) break;
+          if (!destObject[i].equals(srcObject[i])) return false;
         }
       }
     }

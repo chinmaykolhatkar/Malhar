@@ -95,6 +95,7 @@ public enum TimeBucket
 
   private String text;
   private TimeUnit timeUnit;
+  private long millis = 0;
 
   /**
    * Create a time bucket with the given corresponding text and {@link TimeUnit}
@@ -124,6 +125,9 @@ public enum TimeBucket
   private void setTimeUnit(TimeUnit timeUnit)
   {
     this.timeUnit = timeUnit;
+    if (timeUnit != null) {
+      this.millis = timeUnit.toMillis(1L);
+    }
   }
 
   /**
@@ -152,11 +156,10 @@ public enum TimeBucket
    */
   public long roundDown(long timestamp)
   {
-    if(timeUnit == null) {
+    if(millis == 0) {
       return 0;
     }
 
-    long millis = timeUnit.toMillis(1L);
     return (timestamp / millis) * millis;
   }
 
